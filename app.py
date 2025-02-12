@@ -2,8 +2,6 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 import requests
 from datetime import datetime, timedelta
-from werkzeug.urls import url_quote
-
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
@@ -18,17 +16,6 @@ def get_crime_date():
 def get_crime_data(lat, lon, crime_date):
     """
     Fetches crime data using the crimes-at-location endpoint from data.police.uk.
-    
-    Example request:
-      https://data.police.uk/api/crimes-at-location?date=2023-12&lat=52.629729&lng=-1.131592
-    
-    Returns a dictionary with:
-      - total: total number of crimes,
-      - breakdown: a dictionary mapping each crime category to its count,
-      - crime_details: a list of dictionaries with details for each crime,
-        including the category, month, street, latitude, longitude, and outcome.
-    
-    If the API returns a 502 status, returns a hard-coded error message.
     """
     crime_url = f"https://data.police.uk/api/crimes-at-location?date={crime_date}&lat={lat}&lng={lon}"
     print(f"DEBUG: Requesting crime data from: {crime_url}")
@@ -86,11 +73,7 @@ def get_crime_data(lat, lon, crime_date):
 
 def get_data(postcode):
     """
-    Fetches real‑time data for a given full postcode:
-      1. Validates that the postcode is full (contains a space) and trims whitespace.
-      2. Uses postcodes.io to get latitude, longitude, and country.
-      3. Uses OpenWeatherMap to fetch weather data.
-      4. Uses data.police.uk's crimes-at-location endpoint (with a hard-coded date) to fetch crime data.
+    Fetches real‑time data for a given full postcode.
     """
     print(f"DEBUG: Starting get_data for postcode: {postcode}")
     
@@ -176,4 +159,7 @@ def api_data(postcode):
         return jsonify({"error": str(e)}), 500
 
 if __name__ == "__main__":
+    # This block is used for development.
+    # In production, run Gunicorn with:
+    #   gunicorn app:app
     app.run(debug=True, port=5000)
