@@ -2,6 +2,8 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 import requests
 from datetime import datetime, timedelta
+from werkzeug.urls import url_quote
+
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
